@@ -1,0 +1,6 @@
+name: AtlantsBot
+main: me.gabrideiros.bot.Main
+version: 1.0
+author: Gabrideiros
+commands:
+  vincular:
