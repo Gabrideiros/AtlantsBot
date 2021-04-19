@@ -39,35 +39,50 @@ public class DiscordListener extends ListenerAdapter {
 
         String[] args = message.getContentRaw().split(" ");
 
-        if (!args[0].equalsIgnoreCase(".vincular")) return;
+        if (!args[0].equalsIgnoreCase(".convites")) {
 
-        if (args.length < 1) {
-            message.reply("Utilize .vincular `<código>`.");
+            Optional<Account> optional = plugin.getController().getByUser(author.getIdLong());
+
+            if (!optional.isPresent()) {
+                message.reply("Você não possui uma conta vinculada!");
+                return;
+            }
+
+            Account account = optional.get();
+
+            message.reply("Você possui ´" + account.getInvites().size() + "´ convites.");
             return;
         }
 
-        Optional<String> code = plugin.getCodes().keySet().stream().filter(value -> value.equalsIgnoreCase(args[1])).findAny();
+        else if (!args[0].equalsIgnoreCase(".vincular")) {
 
-        if (!code.isPresent()) {
-            message.reply("Não existe nenhuma integração pendente com este código!").queue();
-            return;
+            if (args.length > 2) {
+                message.reply("Utilize .vincular `<código>`.");
+                return;
+            }
+
+            Optional<String> code = plugin.getCodes().keySet().stream().filter(value -> value.equalsIgnoreCase(args[1])).findAny();
+
+            if (!code.isPresent()) {
+                message.reply("Não existe nenhuma integração pendente com este código!").queue();
+                return;
+            }
+
+            String nickname = plugin.getCodes().get(code.get());
+
+            Account account = Account.builder()
+                    .user(author.getIdLong())
+                    .nickname(nickname)
+                    .invites(new ArrayList<>())
+                    .build();
+
+            plugin.getController().getAccounts().put(author.getIdLong(), account);
+            plugin.getRepository().insert(account);
+
+            plugin.getCodes().remove(code.get());
+
+            message.reply("Sua conta foi vinculada com o nickname: " + nickname + ".").queue();
         }
-
-        String nickname = plugin.getCodes().get(code.get());
-
-        Account account = Account.builder()
-                .user(author.getIdLong())
-                .nickname(nickname)
-                .invites(new ArrayList<>())
-                .build();
-
-        plugin.getController().getAccounts().put(author.getIdLong(), account);
-        plugin.getRepository().insert(account);
-
-        plugin.getCodes().remove(code.get());
-
-        message.reply("Sua conta foi vinculada com o nickname: " + nickname + ".").queue();
-
     }
 
     @Override

@@ -1,0 +1,19 @@
+Connection:
+  Type: 'SQLite'
+  Host: 'localhost'
+  Port: 3306
+  Username: 'root'
+  Password: ''
+  Database: 'test'
+
+Key: 'token-do-bot'
+Channel: 'id-do-canal'
+
+Attack: 'https://i.imgur.com/PeFjbzL.png'
+Authenticator: 'https://i.imgur.com/Fb8L4WX.png'
+
+Rewards:
+  1:
+    Amount: 1
+    Commands:
+      - 'money add <player> 10'
