@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import me.gabrideiros.bot.Main;
 import me.gabrideiros.bot.model.Account;
 import me.gabrideiros.bot.model.Reward;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -39,7 +40,20 @@ public class DiscordListener extends ListenerAdapter {
 
         String[] args = message.getContentRaw().split(" ");
 
-        if (!args[0].equalsIgnoreCase(".convites")) {
+        if (args[0].equalsIgnoreCase(".help")) {
+
+            Optional<Account> optional = plugin.getController().getByUser(author.getIdLong());
+
+            MessageEmbed embed = new EmbedBuilder()
+                    .setTitle("**Comandos**")
+                    .setDescription("\n`.vincular <código>` - Para vincular sua conta do jogo.\n`.convites` - Para ver a quantidade de convites.\n")
+                    .build();
+
+            message.getChannel().sendMessage(embed);
+            return;
+        }
+
+        else if (args[0].equalsIgnoreCase(".convites")) {
 
             Optional<Account> optional = plugin.getController().getByUser(author.getIdLong());
 
@@ -54,7 +68,7 @@ public class DiscordListener extends ListenerAdapter {
             return;
         }
 
-        else if (!args[0].equalsIgnoreCase(".vincular")) {
+        else if (args[0].equalsIgnoreCase(".vincular")) {
 
             if (args.length > 2) {
                 message.reply("Utilize .vincular `<código>`.");
